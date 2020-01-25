@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// @flow
+import React from "react"
+import { Layout, Menu, Breadcrumb } from "antd"
+import Feed from "./containers/Feed/Feed"
+import "./App.css"
 
-function App() {
+const { Header, Content, Footer } = Layout
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Layout className="layout">
+      <Header>
+        <div className="logo" />
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={["2"]}
+          style={{ lineHeight: "64px" }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          <Menu.Item key="feed">Feed</Menu.Item>
+        </Menu>
+      </Header>
+      <Content style={{ padding: "0 50px" }}>
+        <Breadcrumb style={{ margin: "16px 0" }}>
+          <Breadcrumb.Item>Home</Breadcrumb.Item>
+          <Breadcrumb.Item>Feed</Breadcrumb.Item>
+        </Breadcrumb>
+        <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
+          <Feed />
+        </div>
+      </Content>
+      <Footer style={{ textAlign: "center" }}>
+        Ant Design ©2018 Created by Ant UED
+      </Footer>
+    </Layout>
+  )
 }
 
-export default App;
+export default App
