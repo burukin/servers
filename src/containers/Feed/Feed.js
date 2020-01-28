@@ -1,28 +1,50 @@
 import React, { useEffect } from "react"
-import { Pagination } from "antd"
+import { Spin } from "antd"
+import PropTypes, { shape } from "prop-types"
 import { connect } from "react-redux"
 
-import PropTypes, { shape } from "prop-types"
-import { getAllMessages } from "../../store/actions/messageActions"
+import { getMessages } from "../../store/actions/messageActions"
+import MessageCard from "../../components/MessageCard/MessageCard"
+import Filter from "../Filter/Filter"
 
-// eslint-disable-next-line no-shadow
-const Feed = ({ messages, isLoading, getAllMessages }) => {
+const Feed = ({
+  messages,
+  isLoading,
+  authors,
+  isAuthorLoading,
+  // eslint-disable-next-line no-shadow
+  getMessages
+}) => {
   useEffect(() => {
-    getAllMessages()
-  }, [getAllMessages])
+    getMessages()
+  }, [getMessages])
 
   let renderMessages = null
 
-  if (!isLoading) {
+  if (!isLoading && !isAuthorLoading) {
     renderMessages = messages.map(message => {
-      return <div key={message.id}>{message.id}</div>
+      return (
+        <MessageCard
+          key={message.id}
+          message={message}
+          author={authors[message.userId]}
+        />
+      )
     })
+  } else {
+    renderMessages = (
+      <div>
+        <Spin size="small" />
+        <Spin />
+        <Spin size="large" />
+      </div>
+    )
   }
 
   return (
     <div>
+      <Filter />
       {renderMessages}
-      <Pagination defaultCurrent={1} total={Math.ceil(messages.length / 20)} />
     </div>
   )
 }
@@ -30,18 +52,24 @@ const Feed = ({ messages, isLoading, getAllMessages }) => {
 Feed.propTypes = {
   messages: PropTypes.arrayOf(shape()),
   isLoading: PropTypes.bool,
-  getAllMessages: PropTypes.func
+  getMessages: PropTypes.func,
+  authors: PropTypes.shape(),
+  isAuthorLoading: PropTypes.bool
 }
 
 Feed.defaultProps = {
   messages: [],
   isLoading: true,
-  getAllMessages: () => {}
+  getMessages: () => {},
+  isAuthorLoading: true,
+  authors: {}
 }
 
-const mapStatetoProps = state => ({
+const mapStateToProps = state => ({
   messages: state.messages.messages,
-  isLoading: state.messages.isLoading
+  authors: state.authors.authors,
+  isLoading: state.messages.isLoading,
+  isAuthorLoading: state.authors.isAuthorLoading
 })
 
-export default connect(mapStatetoProps, { getAllMessages })(Feed)
+export default connect(mapStateToProps, { getMessages })(Feed)
